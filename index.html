@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expository Writing — Interactive Study Course</title>
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5832/5832416.png">
+<style>
+/* ============================================================
+   FONTS
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+/* ============================================================
+   DESIGN TOKENS — Academic Night Theme
+   ============================================================ */
+:root {
+  --bg:         #0f111a;
+  --bg2:        #161925;
+  --bg3:        #1f2433;
+  --panel:      #262b3d;
+  --border:     #2e354a;
+  --border2:    #3f4966;
+
+  --accent:     #6366f1; /* Indigo */
+  --accent2:    #818cf8;
+  --accent-dim: rgba(99, 102, 241, 0.15);
+  
+  --emerald:    #3ecf8e;
+  --em-dim:     rgba(62,207,142,0.1);
+
+  --rose:       #fb7185;
+  --rose-dim:   rgba(251,113,133,0.12);
+
+  --sky:        #38bdf8;
+  --sky-dim:    rgba(56,189,248,0.1);
+
+  --amber:      #fbbf24;
+  --amber-dim:  rgba(251,191,36,0.1);
+
+  --text:       #dde2ec;
+  --text2:      #94a3b8;
+  --text3:      #64748b;
+  --white:      #f8fafc;
+
+  --serif:      'Crimson Pro', Georgia, serif;
+  --display:    'Playfair Display', serif;
+  --sans:       'DM Sans', system-ui, sans-serif;
+  --mono:       'Fira Code', monospace;
+
+  --radius:     10px;
+  --radius2:    16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--serif);background:var(--bg);color:var(--text);line-height:1.9;overflow-x:hidden;}
+a{color:var(--sky);text-decoration:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:99px}
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.shell{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:285px;flex-shrink:0;background:var(--bg2);
+  border-right:1px solid var(--border);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  padding:0 0 3rem;display:flex;flex-direction:column;z-index:50;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+
+.sidebar-logo{
+  padding:1.5rem 1.4rem 1.2rem;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg, var(--accent-dim), transparent);
+  flex-shrink:0;
+}
+.sidebar-logo .badge{
+  font-family:var(--mono);font-size:9px;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--accent2);background:var(--accent-dim);
+  padding:3px 9px;border-radius:4px;display:inline-block;margin-bottom:0.7rem;
+  border:1px solid rgba(99,102,241,0.3);
+}
+.sidebar-logo h1{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--white);line-height:1.3;}
+.sidebar-logo p{font-size:11px;color:var(--text3);font-family:var(--sans);margin-top:5px;}
+
+/* progress ring */
+.progress-ring-wrap{
+  padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:1rem;
+}
+.progress-ring-wrap svg{flex-shrink:0}
+.ring-track{fill:none;stroke:var(--border2);stroke-width:3}
+.ring-fill{
+  fill:none;stroke:var(--accent2);stroke-width:3;stroke-linecap:round;
+  stroke-dasharray:125.66;stroke-dashoffset:125.66;
+  transform:rotate(-90deg);transform-origin:50% 50%;
+  transition:stroke-dashoffset 0.7s ease;
+}
+.ring-pct{font-family:var(--sans);font-size:10px;fill:var(--white);font-weight:700;text-anchor:middle;dominant-baseline:middle}
+.progress-ring-wrap .info .label{font-family:var(--sans);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px}
+.progress-ring-wrap .info .count{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--white)}
+
+/* nav */
+.nav-section{padding:0.8rem 1.2rem 0.2rem}
+.nav-section-label{
+  font-family:var(--sans);font-size:9.5px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:0.5rem;
+  padding-left:0.3rem;
+}
+.nav-item{
+  display:flex;align-items:center;gap:0.6rem;
+  padding:0.42rem 0.65rem;border-radius:7px;cursor:pointer;
+  font-family:var(--sans);font-size:13px;color:var(--text2);
+  transition:all 0.2s;margin-bottom:2px;
+}
+.nav-item:hover{background:var(--bg3);color:var(--white)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent2);border:1px solid rgba(99,102,241,0.2);}
+.nav-item .dot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0;transition:all 0.2s;}
+.nav-item.done .dot{background:var(--emerald)}
+.nav-item.active .dot{background:var(--accent2);box-shadow:0 0 7px var(--accent2)}
+
+/* ── MAIN ── */
+.main{flex:1;min-width:0;max-width:880px;margin:0 auto;padding:0 2.8rem 8rem}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.topbar{
+  position:sticky;top:0;
+  background:rgba(15,17,26,0.92);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);z-index:40;
+  padding:0.6rem 2.8rem;display:flex;align-items:center;
+  justify-content:space-between;font-family:var(--sans);font-size:12px;
+  margin:0 -2.8rem;
+}
+.topbar .tb-left{color:var(--text3);display:flex;align-items:center;gap:0.5rem}
+.topbar .tb-left strong{color:var(--text2)}
+.topbar .tb-right{display:flex;align-items:center;gap:0.6rem;color:var(--text3)}
+.pbar{height:3px;background:var(--border);width:110px;border-radius:99px;overflow:hidden;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--accent2));border-radius:99px;width:0%;transition:width 0.4s ease;}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  padding:4.5rem 0 3.5rem;position:relative;text-align:center;
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:-2.8rem;right:-2.8rem;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent2),var(--sky),var(--accent2),transparent);
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-family:var(--mono);font-size:11px;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--sky);margin-bottom:1.2rem;
+}
+.hero-eyebrow span{width:22px;height:1px;background:var(--sky);display:block;}
+.hero h1{
+  font-family:var(--display);font-size:clamp(2rem,4.5vw,3.5rem);
+  font-weight:700;line-height:1.15;color:var(--white);
+  margin-bottom:1rem;letter-spacing:0.5px;
+}
+.hero h1 .accent{
+  background:linear-gradient(90deg,var(--sky),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-desc{font-size:1.1rem;color:var(--text2);max-width:600px;margin:0 auto 2rem;line-height:1.75;font-family:var(--sans);}
+.hero-stats{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.stat-pill{
+  display:flex;align-items:center;gap:0.5rem;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:0.45rem 1rem;
+  font-family:var(--sans);font-size:12.5px;color:var(--text2);
+}
+.stat-pill strong{color:var(--white)}
+
+/* ============================================================
+   CHAPTER HEADERS
+   ============================================================ */
+.ch-header{
+  margin:3.5rem 0 2rem;padding:2rem 2rem 1.7rem;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius2);position:relative;overflow:hidden;
+}
+.ch-header::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--accent-dim),transparent 55%);
+  pointer-events:none;
+}
+.ch-header .ch-num{
+  font-family:var(--mono);font-size:10px;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--accent2);margin-bottom:0.5rem;
+}
+.ch-header h2{
+  font-family:var(--display);font-size:1.8rem;font-weight:700;
+  color:var(--white);margin-bottom:0.5rem;
+}
+.ch-header .ch-desc{color:var(--text2);font-size:0.95rem;font-family:var(--sans);}
+
+/* ============================================================
+   TOPIC
+   ============================================================ */
+.topic{
+  margin:2.5rem 0;opacity:0;transform:translateY(18px);
+  transition:opacity 0.55s ease,transform 0.55s ease;
+}
+.topic.visible{opacity:1;transform:none}
+.topic-title{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.2rem;}
+.topic-title h3{font-family:var(--sans);font-size:1.3rem;font-weight:700;color:var(--white);}
+.marker{
+  width:34px;height:34px;border-radius:9px;background:var(--accent-dim);
+  border:1px solid rgba(99,102,241,0.4);display:flex;align-items:center;
+  justify-content:center;font-size:15px;flex-shrink:0;
+}
+.check-btn{
+  margin-left:auto;width:28px;height:28px;border-radius:50%;
+  border:2px solid var(--border2);background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  transition:all 0.2s;flex-shrink:0;color:transparent;
+}
+.check-btn:hover{border-color:var(--emerald);background:var(--em-dim)}
+.check-btn.checked{border-color:var(--emerald);background:var(--emerald);color:var(--bg)}
+
+p{margin-bottom:1rem;color:var(--text);font-size:1.05rem}
+
+/* ============================================================
+   BOXES
+   ============================================================ */
+.box{border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.4rem 0;border-left:4px solid;position:relative;}
+.box .box-label{font-family:var(--sans);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem;}
+.box p{margin:0 0 0.4rem;font-size:0.95rem}
+.box p:last-child{margin-bottom:0}
+
+.box.def{background:var(--sky-dim);border-color:var(--sky)}
+.box.def .box-label{color:var(--sky)}
+.box.eg{background:var(--em-dim);border-color:var(--emerald)}
+.box.eg .box-label{color:var(--emerald)}
+.box.exam{background:var(--rose-dim);border-color:var(--rose);animation:examPulse 2.8s ease-in-out infinite;}
+.box.exam .box-label{color:var(--rose)}
+.box.note{background:var(--amber-dim);border-color:var(--amber)}
+.box.note .box-label{color:var(--amber)}
+
+@keyframes examPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(251,113,133,0);border-color:var(--rose);}
+  50%{box-shadow:0 0 0 5px rgba(251,113,133,0.18);border-color:#fb7185;}
+}
+
+/* ============================================================
+   COMPARISON GRID
+   ============================================================ */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.4rem 0;}
+.cmp-grid.tri{grid-template-columns:1fr 1fr 1fr;}
+.cmp-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem 1.2rem;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.cmp-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.35);}
+.cmp-card .cmp-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:0.5rem;font-weight:700;
+}
+.cmp-card .cmp-title{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--white);margin-bottom:0.5rem;}
+.cmp-card p{font-size:0.9rem;margin:0;color:var(--text2);font-family:var(--sans);}
+.cmp-card.sky{border-top:3px solid var(--sky);}
+.cmp-card.sky .cmp-label{color:var(--sky);}
+.cmp-card.em{border-top:3px solid var(--emerald);}
+.cmp-card.em .cmp-label{color:var(--emerald);}
+.cmp-card.rose{border-top:3px solid var(--rose);}
+.cmp-card.rose .cmp-label{color:var(--rose);}
+.cmp-card.amber{border-top:3px solid var(--amber);}
+.cmp-card.amber .cmp-label{color:var(--amber);}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline{margin:1.4rem 0;padding-left:1.5rem;border-left:2px solid var(--border2);}
+.tl-item{position:relative;padding:0 0 1.4rem 1.5rem;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{
+  position:absolute;left:-1.75rem;top:3px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--bg);
+  box-shadow:0 0 0 3px var(--accent-dim);
+}
+.tl-item .tl-step{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--accent2);margin-bottom:3px;
+}
+.tl-item .tl-heading{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--white);margin-bottom:4px;}
+.tl-item p{font-size:0.92rem;color:var(--text2);margin:0;font-family:var(--sans);}
+
+/* ============================================================
+   FORMULA BOX
+   ============================================================ */
+.formula-box{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:1.1rem 1.4rem;
+  margin:1.4rem 0;font-family:var(--mono);
+  position:relative;overflow:hidden;
+}
+.formula-box::before{
+  content:'∑';position:absolute;right:1rem;top:50%;
+  transform:translateY(-50%);font-size:4rem;color:var(--border2);
+  pointer-events:none;line-height:1;
+}
+.formula-box .fl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:0.4rem;}
+.formula-box .fe{font-size:1.1rem;color:var(--white);margin-bottom:0.3rem;}
+.formula-box .fd{font-size:0.85rem;color:var(--text2);font-family:var(--sans);}
+
+/* ============================================================
+   QUIZ SCORE + RETRY
+   ============================================================ */
+.quiz-score{
+  display:none;margin-top:1.2rem;padding:0.9rem 1.2rem;
+  background:var(--bg3);border-radius:var(--radius);
+  font-family:var(--sans);font-size:0.9rem;color:var(--text2);
+  border:1px solid var(--border);text-align:center;
+}
+.quiz-score.show{display:block;}
+.quiz-score strong{color:var(--white);font-size:1.1rem;}
+.retry-btn{
+  margin-top:0.7rem;padding:0.45rem 1.2rem;
+  background:var(--accent-dim);border:1px solid rgba(99,102,241,0.4);
+  border-radius:6px;color:var(--accent2);font-family:var(--sans);
+  font-size:0.85rem;cursor:pointer;transition:all 0.2s;
+}
+.retry-btn:hover{background:var(--accent);color:#fff;}
+
+/* ============================================================
+   HAMBURGER + MOBILE SIDEBAR OVERLAY
+   ============================================================ */
+.hamburger{
+  display:none;flex-direction:column;justify-content:center;
+  gap:5px;background:none;border:1px solid var(--border2);
+  border-radius:7px;padding:6px 8px;cursor:pointer;flex-shrink:0;
+}
+.hamburger span{
+  display:block;width:20px;height:2px;
+  background:var(--text2);border-radius:2px;
+  transition:all 0.3s;
+}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.65);z-index:45;backdrop-filter:blur(3px);
+}
+.sidebar-overlay.show{display:block;}
+
+@media (max-width: 768px) {
+  .sidebar{
+    position:fixed;left:-100%;top:0;height:100vh;
+    width:280px;z-index:50;
+    transition:left 0.35s cubic-bezier(0.4,0,0.2,1);
+    display:flex!important;
+  }
+  .sidebar.open{left:0;}
+  .hamburger{display:flex;}
+  .main{padding:0 1.1rem 5rem}
+  .topbar{padding:0.55rem 1.1rem;margin:0 -1.1rem;gap:0.5rem;}
+  .hero h1{font-size:2rem}
+  .cmp-grid{grid-template-columns:1fr;}
+  .cmp-grid.tri{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   KEY POINTS
+   ============================================================ */
+.kp-box{
+  background:var(--bg);border:1px solid var(--border2);
+  border-radius:var(--radius);margin:1.4rem 0;overflow:hidden;
+}
+.kp-head{
+  background:var(--bg3);padding:0.6rem 1rem;
+  font-family:var(--sans);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);
+}
+.kp-body{padding:1.2rem 1.5rem;}
+.kp-body .kp-row{
+  display:flex;align-items:baseline;gap:0.75rem;
+  padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:0.95rem;
+}
+.kp-body .kp-row:last-child{border-bottom:none}
+.kp-body .kp-row .num{
+  font-family:var(--mono);font-size:10px;color:var(--sky);
+  background:var(--sky-dim);padding:2px 7px;border-radius:4px;flex-shrink:0;
+}
+.kp-body .kp-row .txt{color:var(--text)}
+.kp-body .kp-row .txt strong{color:var(--white)}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.tbl-wrap{overflow-x:auto;margin:1.4rem 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--bg3)}
+thead th{
+  padding:0.7rem 1rem;font-family:var(--sans);font-size:11px;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);
+  text-align:left;border-bottom:1px solid var(--border);
+}
+tbody td{
+  padding:0.7rem 1rem;font-size:0.95rem;border-bottom:1px solid var(--border);
+  vertical-align:top;color:var(--text);font-family:var(--sans);
+}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg2)}
+
+/* ============================================================
+   BULLET LIST
+   ============================================================ */
+.bl{list-style:none;padding:0;margin:0.8rem 0 1rem}
+.bl li{
+  padding:0.38rem 0 0.38rem 1.7rem;position:relative;
+  font-size:1rem;color:var(--text);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.bl li:last-child{border-bottom:none}
+.bl li::before{
+  content:'◆';color:var(--accent2);font-size:8px;
+  position:absolute;left:2px;top:0.75rem;
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+.mini-quiz{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:1.6rem;margin-top:2rem;
+  position:relative;overflow:hidden;
+}
+.mini-quiz::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent2),var(--sky),var(--accent2));
+}
+.mini-quiz h4{
+  font-family:var(--sans);font-size:1.1rem;color:var(--white);
+  margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem;
+}
+.quiz-q{margin-bottom:1.7rem;}
+.quiz-q:last-child{margin-bottom:0;}
+.q-text{font-family:var(--sans);font-size:1rem;color:var(--white);margin-bottom:0.8rem;font-weight:500;line-height:1.5;}
+.options{display:flex;flex-direction:column;gap:0.45rem;}
+.opt{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:7px;padding:0.7rem 1rem;
+  font-family:var(--sans);font-size:0.95rem;color:var(--text);
+  cursor:pointer;text-align:left;transition:all 0.2s;
+}
+.opt:hover:not(:disabled){border-color:var(--accent2);background:var(--accent-dim);}
+.opt.correct{border-color:var(--emerald)!important;background:var(--em-dim)!important;color:var(--emerald)!important;}
+.opt.wrong{border-color:var(--rose)!important;background:var(--rose-dim)!important;color:var(--rose)!important;}
+.opt:disabled{cursor:default;}
+.q-feedback{
+  font-family:var(--sans);font-size:0.9rem;margin-top:0.5rem;
+  padding:0.6rem 0.9rem;border-radius:6px;display:none;
+}
+.q-feedback.show{display:block;}
+.q-feedback.ok{background:var(--em-dim);color:var(--emerald);border:1px solid rgba(62,207,142,0.2);}
+.q-feedback.fail{background:var(--rose-dim);color:var(--rose);border:1px solid rgba(251,113,133,0.2);}
+
+/* responsive handled above in hamburger block */
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay"></div>
+<div class="shell">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="badge">ENG COMP 101</div>
+    <h1>Expository Writing</h1>
+    <p>Introduction to Academic Prose</p>
+  </div>
+
+  <div class="progress-ring-wrap">
+    <svg width="48" height="48" viewBox="0 0 48 48">
+      <circle class="ring-track" cx="24" cy="24" r="20"/>
+      <circle class="ring-fill" id="ringFill" cx="24" cy="24" r="20"/>
+      <text class="ring-pct" id="ringPct" x="24" y="24">0%</text>
+    </svg>
+    <div class="info">
+      <div class="label">Course Progress</div>
+      <div class="count"><span id="doneCount">0</span> / <span id="totalCount">0</span> topics</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">1. The Paragraph</div>
+    <div class="nav-item" data-target="t1-1"><div class="dot"></div>Parts of a Paragraph</div>
+    <div class="nav-item" data-target="t1-2"><div class="dot"></div>Principles of Structure</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">2. Types of Writing</div>
+    <div class="nav-item" data-target="t2-1"><div class="dot"></div>Expository & Narrative</div>
+    <div class="nav-item" data-target="t2-2"><div class="dot"></div>Persuasive & Descriptive</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">3. The Essay</div>
+    <div class="nav-item" data-target="t3-1"><div class="dot"></div>Structure of an Essay</div>
+  </div>
+</aside>
+
+<div class="main">
+
+  <div class="topbar">
+    <div class="tb-left">
+      <button class="hamburger" id="menuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      ✍️ <strong>Expository Writing</strong> — Study Guide
+    </div>
+    <div class="tb-right">
+      <span id="topPct">0%</span>
+      <div class="pbar"><div class="pbar-fill" id="topBar"></div></div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-eyebrow"><span></span>Interactive Self-Learning Edition<span></span></div>
+    <h1>Introduction to <br><span class="accent">Expository Writing</span></h1>
+    <p class="hero-desc">Master the art of clear, structured, and compelling prose. Learn the fundamental building blocks of paragraphs, explore the four major types of writing, and construct powerful essays.</p>
+    <div class="hero-stats">
+      <div class="stat-pill">📘 <strong>3</strong>&nbsp;Chapters</div>
+      <div class="stat-pill">📝 <strong>5</strong>&nbsp;Key Topics</div>
+      <div class="stat-pill">🧪 <strong>Quizzes</strong>&nbsp;Included</div>
+      <div class="stat-pill">⭐ <strong>Exam Focus</strong>&nbsp;Alerts</div>
+    </div>
+  </header>
+
+  <div class="ch-header">
+    <div class="ch-num">Chapter 1 of 3</div>
+    <h2>The Paragraph</h2>
+    <p class="ch-desc">A paragraph is the basic unit of composition. Learn its anatomy and the principles that keep it focused and logical.</p>
+  </div>
+
+  <section class="topic" id="t1-1">
+    <div class="topic-title">
+      <div class="marker">🧱</div>
+      <h3>Topic 1.1: Parts of a Paragraph</h3>
+      <button class="check-btn" onclick="toggleDone(this,'t1-1')">✓</button>
+    </div>
+
+    <p>A paragraph is a group of related sentences that discuss a single main idea. To build a strong paragraph, you need three essential structural components:</p>
+
+    <div class="kp-box">
+      <div class="kp-head">Anatomy of a Paragraph</div>
+      <div class="kp-body">
+        <div class="kp-row"><span class="num">1</span><span class="txt"><strong>The Topic Sentence:</strong> Usually the first sentence. It states the main idea or point of the paragraph. It tells the reader exactly what to expect.</span></div>
+        <div class="kp-row"><span class="num">2</span><span class="txt"><strong>Supporting Sentences:</strong> The "meat" of the paragraph. These sentences provide details, facts, examples, explanations, and evidence that prove or expand upon the topic sentence.</span></div>
+        <div class="kp-row"><span class="num">3</span><span class="txt"><strong>The Concluding Sentence:</strong> The final sentence. It wraps up the paragraph by restating the main idea (in different words) or offering a final thought, creating a smooth transition to the next paragraph.</span></div>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <div class="fl">🔑 The Paragraph Formula</div>
+      <div class="fe">Topic Sentence + Supporting Sentences + Concluding Sentence = Strong Paragraph</div>
+      <div class="fd">This 3-part structure is the backbone of every well-built paragraph in academic writing.</div>
+    </div>
+
+    <div class="box eg">
+      <div class="box-label">📝 Example Paragraph Breakdown</div>
+      <p><strong>[Topic Sentence]</strong> Regular exercise offers incredible benefits for mental health. <strong>[Supporting Sentences]</strong> When you engage in physical activity, your brain releases endorphins, which act as natural mood lifters. Furthermore, exercising consistently helps reduce cortisol levels, effectively lowering daily stress and anxiety. <strong>[Concluding Sentence]</strong> Ultimately, incorporating just thirty minutes of movement into your day is a powerful tool for maintaining a healthy mind.</p>
+    </div>
+
+    <div class="mini-quiz" data-quiz-id="q1-1">
+      <h4>🧪 Topic 1.1 — Checkpoint Quiz</h4>
+      <div class="quiz-q">
+        <div class="q-text">1. What is the primary purpose of a topic sentence?</div>
+        <div class="options">
+          <button class="opt" onclick="checkAnswer(this, false, 'Incorrect. Providing examples is the job of the supporting sentences.')">A. To provide detailed evidence and examples.</button>
+          <button class="opt" onclick="checkAnswer(this, true, 'Correct! The topic sentence introduces the paragraph\'s main idea.')">B. To clearly state the main idea of the paragraph.</button>
+          <button class="opt" onclick="checkAnswer(this, false, 'Incorrect. This describes the concluding sentence.')">C. To summarize the essay and offer a final thought.</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-score"><strong id="q1-1-score"></strong><br><button class="retry-btn" onclick="retryQuiz('q1-1')">↺ Try Again</button></div>
+    </div>
+  </section>
+
+  <section class="topic" id="t1-2">
+    <div class="topic-title">
+      <div class="marker">📐</div>
+      <h3>Topic 1.2: Principles of Paragraph Structure</h3>
+      <button class="check-btn" onclick="toggleDone(this,'t1-2')">✓</button>
+    </div>
+
+    <p>Knowing the parts is not enough; a well-written paragraph must also obey three fundamental principles of structure to ensure clarity and readability.</p>
+
+    <ul class="bl">
+      <li><strong>Unity:</strong> A paragraph must focus on <em>one and only one</em> main idea. Every supporting sentence must directly relate back to the topic sentence. If a sentence goes off-topic, it breaks paragraph unity.</li>
+      <li><strong>Coherence:</strong> This refers to the logical flow of ideas. Sentences should not feel disconnected. Coherence is achieved by organizing thoughts logically (e.g., chronologically, order of importance) and using <em>transition words</em> (however, therefore, in addition).</li>
+      <li><strong>Adequacy (or Development):</strong> A paragraph must be sufficiently developed. It needs enough supporting details to fully explain or prove the topic sentence. A paragraph with only two sentences is usually underdeveloped.</li>
+    </ul>
+
+    <div class="cmp-grid tri">
+      <div class="cmp-card sky">
+        <div class="cmp-label">Principle 1</div>
+        <div class="cmp-title">Unity</div>
+        <p>One idea only. Every sentence must connect to the topic sentence. Off-topic = broken unity.</p>
+      </div>
+      <div class="cmp-card em">
+        <div class="cmp-label">Principle 2</div>
+        <div class="cmp-title">Coherence</div>
+        <p>Sentences flow logically. Use transition words (however, therefore) to link ideas smoothly.</p>
+      </div>
+      <div class="cmp-card amber">
+        <div class="cmp-label">Principle 3</div>
+        <div class="cmp-title">Adequacy</div>
+        <p>Enough detail to fully prove the topic sentence. Two sentences is never enough.</p>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">🔴 Exam Alert — Unity vs. Coherence</div>
+      <p>Examiners often test the difference between these two. Remember: <strong>Unity</strong> means staying on topic (no irrelevant details). <strong>Coherence</strong> means sentences flow smoothly together (good transitions).</p>
+    </div>
+
+    <div class="mini-quiz" data-quiz-id="q1-2">
+      <h4>🧪 Topic 1.2 — Checkpoint Quiz</h4>
+      <div class="quiz-q">
+        <div class="q-text">1. If a writer includes a sentence about "the history of pizza" in a paragraph meant to explain "how to bake a cake," which principle has been violated?</div>
+        <div class="options">
+          <button class="opt" onclick="checkAnswer(this, true, 'Exactly! The paragraph has lost its focus on one main idea, violating the principle of Unity.')">A. Unity</button>
+          <button class="opt" onclick="checkAnswer(this, false, 'Coherence relates to the smooth flow and connection between sentences.')">B. Coherence</button>
+          <button class="opt" onclick="checkAnswer(this, false, 'Adequacy relates to whether there is enough detail, not whether the detail is off-topic.')">C. Adequacy</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-score"><strong id="q1-2-score"></strong><br><button class="retry-btn" onclick="retryQuiz('q1-2')">↺ Try Again</button></div>
+    </div>
+  </section>
+
+
+  <div class="ch-header">
+    <div class="ch-num">Chapter 2 of 3</div>
+    <h2>Types of Writing</h2>
+    <p class="ch-desc">Depending on your purpose, writing generally falls into one of four distinct modes or categories.</p>
+  </div>
+
+  <section class="topic" id="t2-1">
+    <div class="topic-title">
+      <div class="marker">📖</div>
+      <h3>Topic 2.1: Expository & Narrative Writing</h3>
+      <button class="check-btn" onclick="toggleDone(this,'t2-1')">✓</button>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Primary Purpose</th>
+            <th>Common Formats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Expository Writing</strong></td>
+            <td>To explain, inform, define, or describe a subject objectively. It is factual and logical, free of personal opinions.</td>
+            <td>Textbooks, how-to guides, recipes, news reports, analytical essays.</td>
+          </tr>
+          <tr>
+            <td><strong>Narrative Writing</strong></td>
+            <td>To tell a story (real or fictional). It usually features characters, a setting, a plot, a conflict, and a resolution.</td>
+            <td>Novels, short stories, memoirs, biographies, anecdotes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cmp-grid">
+      <div class="cmp-card sky">
+        <div class="cmp-label">Expository</div>
+        <div class="cmp-title">📘 Inform & Explain</div>
+        <p>Objective. Fact-based. No personal opinion. Answers <em>"What?"</em> and <em>"How?"</em></p>
+      </div>
+      <div class="cmp-card em">
+        <div class="cmp-label">Narrative</div>
+        <div class="cmp-title">📖 Tell a Story</div>
+        <p>Characters, plot, conflict, resolution. Answers <em>"What happened?"</em></p>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">🔴 Exam Alert — Expository vs. Narrative</div>
+      <p>If a question asks you to identify writing type, look for the <strong>purpose</strong>: Is it explaining facts objectively? → Expository. Is it recounting events as a story? → Narrative.</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-label">💡 Key Takeaway</div>
+      <p>If you are trying to teach the reader *how* something works, use Expository writing. If you are sharing *what happened*, use Narrative writing.</p>
+    </div>
+
+  </section>
+
+  <section class="topic" id="t2-2">
+    <div class="topic-title">
+      <div class="marker">⚖️</div>
+      <h3>Topic 2.2: Persuasive & Descriptive Writing</h3>
+      <button class="check-btn" onclick="toggleDone(this,'t2-2')">✓</button>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Primary Purpose</th>
+            <th>Common Formats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Persuasive Writing</strong></td>
+            <td>To convince the reader to agree with the author's opinion or take a specific action. It uses logic, emotion, and ethical appeals.</td>
+            <td>Op-eds, advertisements, cover letters, political speeches, reviews.</td>
+          </tr>
+          <tr>
+            <td><strong>Descriptive Writing</strong></td>
+            <td>To paint a picture with words. It relies heavily on sensory details (sight, sound, smell, touch, taste) to immerse the reader.</td>
+            <td>Poetry, travel journals, character sketches, nature writing.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cmp-grid">
+      <div class="cmp-card rose">
+        <div class="cmp-label">Persuasive</div>
+        <div class="cmp-title">⚖️ Convince & Argue</div>
+        <p>Uses logic, emotion & ethics. Aims to change the reader's <em>opinion or action</em>.</p>
+      </div>
+      <div class="cmp-card amber">
+        <div class="cmp-label">Descriptive</div>
+        <div class="cmp-title">🎨 Paint & Immerse</div>
+        <p>Uses sensory details (sight, sound, smell, taste, touch). Creates a vivid <em>picture</em>.</p>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">🔴 Exam Alert — All Four Types</div>
+      <p><strong>Quick key:</strong> Expository = Explain · Narrative = Story · Persuasive = Convince · Descriptive = Sense. Exams frequently ask you to classify a passage or match a purpose to its writing type.</p>
+    </div>
+
+    <div class="mini-quiz" data-quiz-id="q2">
+      <h4>🧪 Topic 2 — Checkpoint Quiz</h4>
+      <div class="quiz-q">
+        <div class="q-text">1. You are writing an essay arguing that your school should start classes at 9:00 AM instead of 8:00 AM. What type of writing is this?</div>
+        <div class="options">
+          <button class="opt" onclick="checkAnswer(this, false, 'Expository writing is strictly factual and explanatory, not opinionated.')">A. Expository</button>
+          <button class="opt" onclick="checkAnswer(this, true, 'Correct! You are trying to convince the reader to adopt a viewpoint.')">B. Persuasive</button>
+          <button class="opt" onclick="checkAnswer(this, false, 'Narrative writing tells a story.')">C. Narrative</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">2. An instruction manual for assembling a bookshelf is an example of:</div>
+        <div class="options">
+          <button class="opt" onclick="checkAnswer(this, true, 'Perfect! It is strictly informing and explaining a process.')">A. Expository Writing</button>
+          <button class="opt" onclick="checkAnswer(this, false, 'It does not use sensory details to paint a picture.')">B. Descriptive Writing</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-score"><strong id="q2-score"></strong><br><button class="retry-btn" onclick="retryQuiz('q2')">↺ Try Again</button></div>
+    </div>
+  </section>
+
+  <div class="ch-header">
+    <div class="ch-num">Chapter 3 of 3</div>
+    <h2>The Essay</h2>
+    <p class="ch-desc">Taking paragraphs and combining them into a larger, cohesive argument or explanation.</p>
+  </div>
+
+  <section class="topic" id="t3-1">
+    <div class="topic-title">
+      <div class="marker">🏛️</div>
+      <h3>Topic 3.1: Structure of an Essay</h3>
+      <button class="check-btn" onclick="toggleDone(this,'t3-1')">✓</button>
+    </div>
+
+    <p>A standard academic essay (often called the 5-paragraph essay format) follows a strict architecture, expanding on the concept of a single paragraph.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-step">Part 1</div>
+        <div class="tl-heading">🪝 Introduction</div>
+        <p>Hook → Background Information → <strong>Thesis Statement</strong>. Sets up the entire essay's direction.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-step">Part 2</div>
+        <div class="tl-heading">📚 Body Paragraphs (×3)</div>
+        <p>Each proves one sub-point of the thesis. Follows: Topic Sentence → Evidence → Concluding Sentence.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-step">Part 3</div>
+        <div class="tl-heading">🔒 Conclusion</div>
+        <p>Restate thesis (new words) → Summarize body points → Clincher statement. No new info!</p>
+      </div>
+    </div>
+
+    <div class="kp-box">
+      <div class="kp-head">The Three Pillars of an Essay</div>
+      <div class="kp-body">
+        <div class="kp-row"><span class="num">1</span><span class="txt"><strong>The Introduction:</strong> This paragraph introduces the topic. It usually begins with a <em>Hook</em> to grab attention, provides necessary <em>Background Information</em>, and ends with the <em>Thesis Statement</em>—the central claim or main point of the entire essay.</span></div>
+        <div class="kp-row"><span class="num">2</span><span class="txt"><strong>The Body Paragraphs:</strong> Usually 3 or more paragraphs. Each body paragraph explores a single sub-point that proves the thesis. They follow the "Topic Sentence, Supporting Details, Concluding Sentence" structure discussed in Chapter 1.</span></div>
+        <div class="kp-row"><span class="num">3</span><span class="txt"><strong>The Conclusion:</strong> The final paragraph. It restates the thesis (in different words), summarizes the main points made in the body paragraphs, and leaves the reader with a final, thought-provoking statement (a "clincher"). No new information should be introduced here.</span></div>
+      </div>
+    </div>
+
+    <div class="box def">
+      <div class="box-label">📖 Definition — The Thesis Statement</div>
+      <p>The <strong>Thesis Statement</strong> is the steering wheel of your essay. It is a single sentence (usually at the very end of your introduction) that states exactly what your essay will prove, explain, or argue.</p>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">🔴 Exam Alert — What Does NOT Belong in a Conclusion?</div>
+      <p>A very common exam trap: conclusions must <strong>never</strong> introduce new evidence or arguments. They only restate, summarize, and close. If you see a question asking what belongs in a conclusion — "new statistics" is always wrong.</p>
+    </div>
+
+    <div class="formula-box">
+      <div class="fl">📐 Essay Architecture Formula</div>
+      <div class="fe">Introduction (Hook + Background + Thesis) + Body ×3 + Conclusion = Complete Essay</div>
+      <div class="fd">The 5-paragraph essay is the standard model for academic writing at all levels.</div>
+    </div>
+
+    <div class="mini-quiz" data-quiz-id="q3-1">
+      <h4>🧪 Topic 3.1 — Final Checkpoint Quiz</h4>
+      <div class="quiz-q">
+        <div class="q-text">1. Where is the thesis statement typically located in a standard essay?</div>
+        <div class="options">
+          <button class="opt" onclick="checkAnswer(this, false, 'The hook is the first sentence; the thesis comes later.')">A. As the very first sentence (the hook).</button>
+          <button class="opt" onclick="checkAnswer(this, true, 'Correct! It usually acts as the bridge between the introduction and the body paragraphs.')">B. At the end of the introduction paragraph.</button>
+          <button class="opt" onclick="checkAnswer(this, false, 'The thesis is restated here, but it must be established earlier.')">C. In the conclusion paragraph.</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">2. Which section of the essay is responsible for providing the evidence and detailed examples to support the thesis?</div>
+        <div class="options">
+          <button class="opt" onclick="checkAnswer(this, false, 'The introduction only presents the topic and thesis.')">A. The Introduction</button>
+          <button class="opt" onclick="checkAnswer(this, true, 'Absolutely! The body paragraphs carry the bulk of the evidence and analysis.')">B. The Body Paragraphs</button>
+          <button class="opt" onclick="checkAnswer(this, false, 'No new evidence should be introduced in the conclusion.')">C. The Conclusion</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-score"><strong id="q3-1-score"></strong><br><button class="retry-btn" onclick="retryQuiz('q3-1')">↺ Try Again</button></div>
+    </div>
+  </section>
+
+
+</div></div>
+
+<script>
+// ── Hamburger Menu ──
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+function openSidebar(){
+  sidebar.classList.add('open');
+  menuBtn.classList.add('open');
+  overlay.classList.add('show');
+}
+function closeSidebar(){
+  sidebar.classList.remove('open');
+  menuBtn.classList.remove('open');
+  overlay.classList.remove('show');
+}
+menuBtn.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+overlay.addEventListener('click', closeSidebar);
+document.querySelectorAll('.nav-item[data-target]').forEach(item => {
+  item.addEventListener('click', () => {
+    const target = document.getElementById(item.dataset.target);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.innerWidth <= 768) closeSidebar();
+  });
+});
+
+// ── Intersection Observer ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      const id = e.target.id;
+      document.querySelectorAll(`.nav-item[data-target="${id}"]`).forEach(n => {
+        document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
+        n.classList.add('active');
+      });
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.topic').forEach(t => observer.observe(t));
+
+// ── Progress tracking with localStorage ──
+const STORAGE_KEY = 'expwriting_progress';
+const totalTopics = document.querySelectorAll('.topic').length;
+document.getElementById('totalCount').textContent = totalTopics;
+
+function loadProgress() {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  // restore checked topics
+  (saved.done || []).forEach(id => {
+    const btn = document.querySelector(`.topic#${id} .check-btn`);
+    const navItem = document.querySelector(`.nav-item[data-target="${id}"]`);
+    if (btn) { btn.classList.add('checked'); }
+    if (navItem) navItem.classList.add('done');
+  });
+  updateProgress();
+}
+
+function saveProgress() {
+  const done = [];
+  document.querySelectorAll('.check-btn.checked').forEach(btn => {
+    const topic = btn.closest('.topic');
+    if (topic) done.push(topic.id);
+  });
+  const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  existing.done = done;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+}
+
+function updateProgress() {
+  const done = document.querySelectorAll('.check-btn.checked').length;
+  const pct = Math.round((done / totalTopics) * 100);
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('topPct').textContent = pct + '%';
+  document.getElementById('topBar').style.width = pct + '%';
+  const circumference = 2 * Math.PI * 20;
+  const offset = circumference - (pct / 100) * circumference;
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringPct').textContent = pct + '%';
+}
+
+function toggleDone(btn, id) {
+  btn.classList.toggle('checked');
+  const navItem = document.querySelector(`.nav-item[data-target="${id}"]`);
+  if (navItem) navItem.classList.toggle('done');
+  updateProgress();
+  saveProgress();
+}
+
+// ── Quiz with score tracking + localStorage ──
+function getQuizContainer(btn) {
+  return btn.closest('[data-quiz-id]');
+}
+
+function checkAnswer(btn, isCorrect, feedback) {
+  const quizGroup = btn.closest('.quiz-q');
+  const options = quizGroup.querySelectorAll('.opt');
+  options.forEach(opt => opt.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fbDiv = btn.parentElement.nextElementSibling;
+  fbDiv.textContent = (isCorrect ? '✅ ' : '❌ ') + feedback;
+  fbDiv.className = 'q-feedback show ' + (isCorrect ? 'ok' : 'fail');
+
+  // Check if whole quiz is done
+  const quiz = btn.closest('[data-quiz-id]');
+  if (!quiz) return;
+  const allGroups = quiz.querySelectorAll('.quiz-q');
+  const allAnswered = [...allGroups].every(g => g.querySelector('.opt.correct, .opt.wrong'));
+  if (allAnswered) showQuizScore(quiz);
+}
+
+function showQuizScore(quiz) {
+  const id = quiz.dataset.quizId;
+  const total = quiz.querySelectorAll('.quiz-q').length;
+  const correct = quiz.querySelectorAll('.opt.correct').length;
+  const scoreEl = quiz.querySelector('.quiz-score');
+  const strongEl = quiz.querySelector(`#${id}-score`);
+  if (strongEl) strongEl.textContent = `Score: ${correct} / ${total} — ${correct === total ? '🎉 Perfect!' : correct > 0 ? '👍 Good effort!' : '📚 Review and retry!'}`;
+  if (scoreEl) scoreEl.classList.add('show');
+  // Save to localStorage
+  const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  if (!existing.quizzes) existing.quizzes = {};
+  existing.quizzes[id] = { correct, total };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+}
+
+function retryQuiz(quizId) {
+  const quiz = document.querySelector(`[data-quiz-id="${quizId}"]`);
+  if (!quiz) return;
+  quiz.querySelectorAll('.opt').forEach(opt => {
+    opt.disabled = false;
+    opt.classList.remove('correct', 'wrong');
+  });
+  quiz.querySelectorAll('.q-feedback').forEach(fb => { fb.textContent = ''; fb.className = 'q-feedback'; });
+  const scoreEl = quiz.querySelector('.quiz-score');
+  if (scoreEl) scoreEl.classList.remove('show');
+}
+
+loadProgress();
+</script>
+</body>
+</html>
